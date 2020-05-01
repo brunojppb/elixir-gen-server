@@ -1,6 +1,18 @@
 defmodule Stack.Server do
   use GenServer
 
+  def start_link(initial_stack \\ []) do
+    GenServer.start_link(__MODULE__, initial_stack, name: __MODULE__)
+  end
+
+  def push(value) do
+    GenServer.cast __MODULE__, {:push, value}
+  end
+
+  def pop do
+    GenServer.call __MODULE__, :pop
+  end
+
   def init(initial_stack \\ []) do
     { :ok, initial_stack }
   end
