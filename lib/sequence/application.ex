@@ -8,13 +8,17 @@ defmodule Sequence.Application do
   def start(_type, _args) do
     children = [
       # Starts a worker by calling: Sequence.Worker.start_link(arg)
-      { Sequence.Server, 123 },
-      { Stack.Server, ["bruno", 99] }
+      { Stack.Server, ["bruno", 99] },
+      { Sequence.Stash, 123 },
+      { Sequence.Server, nil },
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Sequence.Supervisor]
+    # :rest_for_one
+    #   - The subsequent servers on the children list depend on the health of the previous server.
+    #     If the server terminates, all the following children should be terminated and restarted
+    opts = [strategy: :rest_for_one, name: Sequence.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end
